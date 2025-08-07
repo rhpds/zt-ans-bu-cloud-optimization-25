@@ -1,10 +1,11 @@
-= Lab Guide: Ansible Dynamic Inventory for AWS
+:doctype: book
 :toc:
 :toc-title: Table of Contents
 :sectnums:
 :icons: font
 
-An overview of setting up a dynamic inventory for AWS EC2 within the automation controller.
+= Lab Guide: Cloud Optimization with Dynamic Inventory
+_A guide to understanding basic optimization exercises for public cloud environments._
 
 *Estimated time to complete: 10 minutes*
 
@@ -12,161 +13,135 @@ An overview of setting up a dynamic inventory for AWS EC2 within the automation 
 
 == Lab Overview
 
-Welcome to the `Ansible Hybrid Cloud Automation - Infrastructure Visibility` lab. In this guide, you will learn how to set up and use a dynamic inventory for AWS EC2 in the automation controller.
+Welcome to the `Ansible Hybrid Cloud Automation - Cloud Optimization` lab. In this guide, you will learn about a pre-configured Dynamic Inventory and how to use resource tags to manage and report on your cloud infrastructure.
 
-First, log in to the Ansible Automation Platform UI with the following credentials.
+---
 
-.Login Credentials
+== Task 1: Log into Ansible Automation Platform
+
+First, you will log in to the automation controller to begin the lab exercises.
+
+. **Navigate to the Automation Controller UI.**
++
+Click on the **Automation Controller** tab at the top of your lab window.
+
+. **Log in with the provided credentials.**
++
 [cols="1,2a"]
 |===
+| Parameter | Value
 | Username | `admin`
 | Password | `ansible123!`
 |===
 
----
-
-== Task 1: Understanding Credentials
-
-Credentials are used for authentication when launching Jobs against machines, synchronizing with inventory sources, and importing project content from version control systems. In this lab, we use two pre-configured credentials:
-
-* **RHEL on AWS - SSH KEY:** An SSH key for connecting to the Red Hat Enterprise Linux hosts running on AWS.
-* **AWS_Credential:** An AWS credential for performing actions on the AWS cloud, such as creating a VPC or managing instances.
-
-. **Navigate to the Credentials menu.**
-+
-In the Controller UI, go to the left navigation menu and select *Infrastructure* → *Credentials*.
-+
-NOTE: Credential keys are encrypted. Once entered into the automation controller, no one, including administrators, can view the sensitive values.
+After logging in, you will land on the main dashboard.
 
 ---
 
-== Task 2: Creating an Inventory
+== Task 2: Examine the Dynamic Inventory
 
-In this task, you will create a new inventory to hold your dynamically discovered hosts from AWS.
+In this task, you will explore the pre-configured dynamic inventory and inspect the host variables and tags that are automatically discovered from AWS.
 
 . **Navigate to the Inventories menu.**
 +
-From the left navigation menu, select *Infrastructure* → *Inventories*.
+In the left navigation menu, go to *Infrastructure* → *Inventories*.
 
-. **Initiate inventory creation.**
+. **Select the AWS Inventory.**
 +
-Click the blue *Create inventory* button and select *Create inventory*.
+Click on the inventory named `AWS Inventory`.
 +
-image::https://github.com/HichamMourad/awsinfravis25/blob/master/images/create_inventory.png?raw=true[Create a new inventory, 600, opts="border"]
+image::https://github.com/IPvSean/pictures_for_github/blob/master/aws_inventory.png?raw=true[AWS Inventory details page, 250, opts="border"]
 
-. **Enter the inventory details.**
+. **View the hosts.**
++
+Click on the **Hosts** tab. You will see two hosts listed, identified by their `Name` tag from AWS EC2.
+
+. **Inspect a host's variables.**
++
+Click on one of the hosts to open its details page.
+
+. **Examine the tags.**
++
+On the host's *Details* tab, scroll down to the `VARIABLES` section. Note the `tags` section, which contains key-value pairs discovered directly from the EC2 instance. We will use these tags in a later step.
++
+image::https://github.com/IPvSean/pictures_for_github/blob/master/tags.png?raw=true[EC2 instance tags in automation controller, 500, opts="border"]
+
+TIP: To see these same tags in the AWS console, you can open the *AWS console* tab in your lab environment, log in, and navigate to the EC2 service to inspect the instances.
+
+---
+
+== Task 3: Create a Job Template
+
+Next, you will create a job template to run a playbook that retrieves and displays tag information from your AWS resources.
+
+. **Navigate to the Templates page.**
++
+From the left navigation menu, select *Templates*.
+
+. **Initiate the creation of a new job template.**
++
+Click the **Create template** button, then select **Create job template**.
++
+image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
+
+. **Enter the job template details.**
 +
 Fill out the form with the following information:
 +
 [cols="1,1"]
 |===
 | Parameter | Value
-| Name | `AWS Inventory`
-| Organization | `Default`
+| Name | `Retrieve tag information`
+| Job Type | `Run`
+| Inventory | `Demo Inventory`
+| Project | `AWS Demos Project`
+| Execution Environment | `AWS Execution Environment`
+| Playbook | `playbooks/tag_info_aws.yml`
+| Credentials | `AWS_Credential`
 |===
-
-. **Save the inventory.**
 +
-Click the blue *Create inventory* button.
+NOTE: To find the `AWS_Credential`, you may need to filter the *Credential Type* to `Amazon Web Services`.
+
+. **Save the job template.**
++
+Scroll to the bottom and click the blue **Save** button.
+
+NOTE: The Ansible Playbooks for this lab are sourced from the following project: link:https://github.com/ansible-cloud/aws_demos[ansible-cloud/aws_demos].
 
 ---
 
-== Task 3: Creating an Inventory Source
+== Task 4: Launch the Job Template and Review Output
 
-Now you will configure a source to dynamically pull host information from your AWS account into the inventory you just created.
+Finally, you will run the job template and examine the structured data it collects.
 
-. **Navigate to the Sources tab.**
+. **Launch the job template.**
 +
-Within your newly created `AWS Inventory`, click the *Sources* tab at the top.
+Navigate back to the *Templates* page, find the `Retrieve tag information` job template, and click the **Launch** icon (🚀).
 +
-image::https://github.com/IPvSean/pictures_for_github/blob/master/sources-savage.png?raw=true[Inventory Sources Tab, 300, opts="border"]
+image::https://github.com/IPvSean/pictures_for_github/blob/master/launch_job.png?raw=true[Launch Job Icon, 80, opts="border"]
 
-. **Initiate source creation.**
+. **Understand the playbook execution.**
 +
-Click the blue *Create source* button.
-
-. **Enter the source details.**
+This playbook runs four tasks to gather and display information:
 +
-Fill out the form with the following information:
+* It uses the `amazon.aws.ec2_vpc_net_info` module to get data for all VPCs.
+* It uses the `debug` module to print the VPC ID, name, and tags.
+* It uses the `amazon.aws.ec2_instance_info` module to get data for all EC2 instances.
+* It uses another `debug` task to print the EC2 instance name, ID, and tags.
+
+. **Review the job output.**
 +
-[cols="1,1"]
-|===
-| Parameter | Value
-| Name | `AWS Source`
-| Source | `Amazon EC2`
-|===
-
-. **Configure the source credential.**
+The final task in the playbook uses a loop to display the information for each instance.
 +
-After selecting `Amazon EC2` as the source, more options will appear. Find the *Credential* field.
+[source,yaml]
+----
+- name: Display AWS EC2 info and tags information to terminal
+  debug:
+    msg:
+      - "{{ item.tags['Name'] | default('The tag *Name* Does not exist') }}"
+      - "{{ item.instance_id }}"
+      - "{{ item.tags }}"
+  loop: "{{ ec2_instance_info.instances }}"
+----
 +
-[cols="1,1"]
-|===
-| Parameter | Value
-| Credential | `AWS_Credential`
-|===
-+
-TIP: You may need to click the search icon (magnifying glass) to browse and select the `AWS_Credential`.
-
-. **Save the source.**
-+
-Click the blue *Create source* button.
-
-. **Launch the inventory sync.**
-+
-Click the *Sync* button in the top right to retrieve the host inventory from AWS EC2.
-
----
-
-== Task 4: Examining the Inventory
-
-For this final task, we will examine the hosts that were added to the inventory and then run an ad-hoc command to verify connectivity.
-
-. **Return to the Hosts view.**
-+
-Click the *Hosts* tab. You should now see two hosts listed, dynamically pulled from AWS.
-+
-image::https://github.com/IPvSean/pictures_for_github/blob/master/aws_inventory_menu.png?raw=true[AWS Inventory Menu, 400, opts="border"]
-
-. **Run an ad-hoc command.**
-+
-Select the checkbox next to each host and click the *Run command* button. A wizard will appear.
-
-. **Configure the command details.**
-+
---
-* **Module:** `ping`
-* Click *Next*.
---
-
-. **Select the Execution Environment.**
-+
---
-* Select *Default execution environment*.
-* Click *Next*.
---
-
-. **Select the machine credential.**
-+
---
-* Select *RHEL on AWS - SSH KEY*. (You may have to browse to find it).
-* Click *Next*.
---
-
-. **Launch the job.**
-+
-Review the details on the *Preview* screen and click the *Finish* button.
-+
-The ad-hoc command runs the Ansible link:https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html[ping] module, which verifies SSH connectivity between the control node and the two RHEL EC2 instances. The output should show a "SUCCESS" status.
-+
-image::https://github.com/HichamMourad/awsinfravis25/blob/master/images/ping_output.png?raw=true[Successful ping command output, 600, opts="border"]
-
----
-
-== Next Steps
-
-You have successfully completed this lab. Press the `Check` button in the lab environment to proceed to the next challenge.
-
-== Troubleshooting
-
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+visibility+(aap2.5)&assignees=hichammourad[open an issue on GitHub].
+The output in the automation controller will show this structured data clearly for each resource
