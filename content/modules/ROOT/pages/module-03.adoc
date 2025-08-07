@@ -1,45 +1,56 @@
-= Lab Guide: Creating Dynamic Documentation with Automation
+:doctype: book
 :toc:
 :toc-title: Table of Contents
 :sectnums:
 :icons: font
 
-This guide demonstrates how to generate dynamic documentation from cloud infrastructure using Ansible automation.
+= Lab Guide: Building an Optimization Workflow
+_A guide to creating a workflow to identify and act on cloud resources._
 
-*Estimated time to complete: 15 minutes*
+*Estimated time to complete: 20 minutes*
 
 ---
 
 == Lab Overview
 
-Welcome to the third challenge. In this lab, you will generate a dynamic HTML website using the structured data gathered in the previous challenge.
-
-First, log in to the Ansible Automation Platform UI with the following credentials.
-
-.Login Credentials
-[cols="1,2a"]
-|===
-| Username | `admin`
-| Password | `admin`
-|===
+Welcome to the third challenge. In this guide, you will create a link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/using_automation_execution/controller-workflow-job-templates#controller-create-workflow-template[workflow] that combines job templates to first identify specific cloud resources and then perform an action on them.
 
 ---
 
-== Task 1: Create a New Job Template
+== Task 1: Log into Ansible Automation Platform
 
-You will start by creating a job template that runs a playbook to generate the cloud report.
+First, you will log in to the automation controller to begin the lab exercises.
+
+. **Navigate to the Automation Controller UI.**
++
+Click on the **Automation Controller** tab at the top of your lab window.
+
+. **Log in with the provided credentials.**
++
+[cols="1,2a"]
+|===
+| Parameter | Value
+| Username | `admin`
+| Password | `ansible123!`
+|===
+
+After logging in, you will land on the main dashboard.
+
+---
+
+== Task 2: Create the "Stop Instances" Job Template
+
+You will start by creating a job template whose purpose is to stop EC2 instances.
 
 . **Navigate to the Templates page.**
 +
-From the left navigation menu, select *Templates*.
-+
-image::https://github.com/HichamMourad/awsinfravis25/blob/master/images/menu_templates.png?raw=true[Templates link in menu, opts="border"]
+In the left navigation menu, go to *Automation Execution* → *Templates*.
 
 . **Initiate the creation of a new job template.**
 +
 Click the **Create template** button, then select **Create job template**.
 +
-image::https://github.com/HichamMourad/awsinfravis25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
+image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
 
 . **Enter the job template details.**
 +
@@ -48,115 +59,153 @@ Fill out the form with the following information:
 [cols="1,1"]
 |===
 | Parameter | Value
-| Name | `Create Cloud Report`
+| Name | `Stop instances`
 | Job Type | `Run`
 | Inventory | `Demo Inventory`
 | Project | `AWS Demos Project`
 | Execution Environment | `AWS Execution Environment`
-| Playbook | `playbooks/cloud_report.yml`
-| Credentials | `AWS_Credential` and `SSH Controller Credential`
+| Playbook | `playbooks/stop_aws_ec2_instances.yml`
+| Credentials | `AWS_Credential`
 |===
 +
-IMPORTANT: This job template requires two credentials. One is for retrieving information from AWS, and the second is for connecting via SSH to the report server to generate the report.
+TIP: To find the `AWS_Credential`, you may need to filter the *Credential Type* to `Amazon Web Services`.
 
 . **Save the job template.**
 +
-Click the blue **Save** button.
+Scroll to the bottom and click the blue **Save** button.
+
+. **Understand the playbook.**
++
+This playbook contains a single task that uses the `amazon.aws.ec2_instance` module to stop instances passed to it via the `identified_instances` variable.
++
+[source,yaml]
+----
+- name: stop every un-tagged running instance in a region.
+  amazon.aws.ec2_instance:
+    region: "{{ ec2_region }}"
+    state: stopped
+    instance_ids: "{{ identified_instances }}"
+  when: identified_instances | length  > 0
+----
+
+NOTE: The Ansible Playbooks for this lab are sourced from the following project: link:https://github.com/ansible-cloud/aws_demos[ansible-cloud/aws_demos].
 
 ---
 
-== Task 2: Add a Survey
+== Task 3: Build the AWS Optimization Workflow
 
-Next, you will add a survey to allow the user to specify which server will host the generated HTML report.
+Now, you will combine the template from the previous lab (`Retrieve INSTANCES by tag`) with the new `Stop instances` template into a single workflow.
 
-. **Open the job template's settings.**
+. **Navigate to the Templates page and initiate workflow creation.**
 +
-Navigate to the *Templates* page and click on the name of the `Create Cloud Report` job template.
+Go to *Automation Execution* → *Templates*, click the **Create template** button, and select **Create workflow job template**.
++
+image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new workflow job template, 600, opts="border"]
 
-. **Navigate to the Survey tab.**
-+
-At the top of the template's details page, click the **Survey** tab.
-+
-image::https://github.com/IPvSean/pictures_for_github/blob/master/survey_tab.png?raw=true[Survey Tab, 400, opts="border"]
-
-. **Create a new survey question.**
-+
-Click the blue **Add** button.
-
-. **Configure the survey question.**
-+
-Fill out the form with the following values:
+. **Enter the workflow details.**
 +
 [cols="1,1"]
 |===
 | Parameter | Value
-| Question | `Which server do you want to host the report?`
-| Answer variable name | `_hosts`
-| Answer type | `Text`
-| Default answer | `ansible-1`
+| Name | `AWS Workflow`
+| Organization | `Default`
 |===
++
+Click **Save**. The Workflow Visualizer will open.
 
-. **Save the survey question.**
+. **Add the first node (Retrieve Instances).**
 +
-Click the blue **Save** button.
+Click the **Start** button to add the first step. Configure it as follows:
++
+--
+a. **Node Type:** `Job Template`
+b. **Job Template:** Select `Retrieve INSTANCES by tag`. Click **Next**.
+c. **Survey:** In the `Provide an EC2 filter` field, enter `"tag:Name": "rhel1"`.
+d. Click **Next**, then **Save** to add the node.
+--
 
-. **Enable the survey.**
+. **Add the second node (Stop Instances).**
 +
-Make sure to click the toggle switch to enable the survey.
+Hover over the `Retrieve INSTANCES by tag` node, click the **+** icon, and select *Add node*. Configure it as follows:
 +
-image::https://github.com/HichamMourad/awsinfravis25/blob/master/images/survey_toggle_short.png?raw=true[Enable survey toggle, 600, opts="border"]
+--
+a. **Node Type:** `Job Template`
+b. **Run:** Select `On Success`.
+c. **Job Template:** Select `Stop instances`.
+d. Click **Next**, then **Save**.
+--
+
+. **Save the workflow.**
 +
-NOTE: For this lab, we will host the report on the `ansible-1` host. However, this survey demonstrates how you can make the destination configurable, allowing you to host dynamic documentation anywhere, including on services like Amazon S3.
+In the top right corner of the Visualizer, click **Save**. Your completed workflow should look like this:
++
+image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/c3workflowt3.png?raw=true[Completed workflow diagram, 600, opts="border"]
 
 ---
 
-== Task 3: Launch the Job Template
+== Task 4: Launch the Workflow
 
-Now you are ready to run the job and generate the report.
+Now you are ready to run the complete workflow.
 
-. **Launch the job template.**
+. **Navigate to the Templates page.**
 +
-From the *Templates* page, find the `Create Cloud Report` template and click the **Launch** icon (🚀).
-+
-image::https://github.com/IPvSean/pictures_for_github/blob/master/launch_job.png?raw=true[Launch Job Icon, 30, opts="border"]
+Go to *Automation Execution* → *Templates*.
 
-. **Complete the survey.**
+. **Launch the workflow.**
 +
-When prompted by the survey, accept the default host (`ansible-1`) and launch the job.
+Find the `AWS Workflow` in the list and click the **Launch** icon (🚀).
++
+image::https://github.com/IPvSean/pictures_for_github/blob/master/launch_job.png?raw=true[Launch Job Icon, 80, opts="border"]
 
-. **Review the playbook execution.**
+. **Monitor the visualizer.**
 +
-This playbook uses two roles:
+The workflow visualizer will show the real-time progress. The workflow will:
 +
-. The first role, `retrieve_info`, gathers structured data for VPCs, EC2 instances, and IGWs. link:https://github.com/ansible-cloud/aws_demos/tree/master/roles/retrieve_info[View source code].
-. The second role, `build_report`, installs a web server, copies assets (CSS, images), and uses the structured data to generate an HTML report. link:https://github.com/ansible-cloud/aws_demos/tree/master/roles/build_report[View source code].
-
-. **View the generated report.**
+. Run the `Retrieve instances by tag` node to identify the `rhel1` instance.
+. Upon success, run the `Stop instances` node, which will turn off the instance identified in the first step.
 +
-Once the job completes, navigate to the **Dynamic Report** tab in your lab window. You may need to refresh the page (⟳). Click on the gray boxes with the caret (▸) to expand the tables.
-+
-The report will look similar to this:
-+
-image::https://github.com/IPvSean/pictures_for_github/blob/master/cloud_report.png?raw=true[Picture of the cloud report, opts="border"]
+You can click on any node in the visualizer to view the `Output` tab for that specific job.
 
 ---
 
-== Task 4: Compare Regions
+== Task 5: Verify the Instance is Stopped
 
-A cloud operator can use this report to gain quick awareness of their cloud footprint across different regions. This helps answer important questions, such as:
+Finally, you will confirm the result in the AWS Management Console.
 
-* How can I identify unused VPCs that can be safely deleted?
-* Which regions are actively running instances?
-* Which regions contain stopped instances that could be restarted?
+. **Navigate to the AWS Console.**
++
+Click on the **AWS console** tab in your lab environment and log in with the provided credentials.
++
+WARNING: Be careful to avoid extra spaces when copying and pasting the credentials.
 
-This automated report provides a powerful tool for resource management and cost optimization.
+. **Go to the EC2 service.**
++
+In the top search bar, search for and select `EC2`.
++
+image::https://github.com/IPvSean/pictures_for_github/blob/master/aws_ec2.png?raw=true[AWS console search for EC2, 550, opts="border"]
+
+. **Check the instance status.**
++
+Go to the *Instances* page. Make sure you are in the **N. Virginia / us-east-1** region. You should see one instance in the `Running` state and the `rhel1` instance in the `Stopped` state.
++
+image::https://github.com/IPvSean/pictures_for_github/blob/master/aws_instances_status.png?raw=true[Instance status in AWS console, 550, opts="border"]
 
 ---
 
-== Finished!
+== Why Cloud Optimization is Important
 
-You have successfully completed this lab. Press the `Check` button in your lab environment to validate your work.
+You have successfully completed this challenge. This simple lab demonstrates a powerful concept for managing cloud costs and resources. Automation workflows can help you:
+
+* **Turn off unused resources:** Automatically shut down instances that are no longer needed.
+* **Right-size cloud resources:** Identify over-provisioned instances and adjust them.
+* **Recover orphaned resources:** Find and remove resources left behind by failed processes.
+
+Imagine scheduling a workflow to run nightly, searching for any development instances left running for more than a few hours. This gives cloud teams peace of mind that their infrastructure is not incurring unnecessary charges.
+
+== Next Steps
+
+Press the `Check` button in your lab environment to complete the challenge.
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+visibility+(aap2.5)&assignees=hichammourad[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[open an issue on GitHub].
