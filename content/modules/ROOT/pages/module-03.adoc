@@ -1,0 +1,162 @@
+= Lab Guide: Creating Dynamic Documentation with Automation
+:toc:
+:toc-title: Table of Contents
+:sectnums:
+:icons: font
+
+This guide demonstrates how to generate dynamic documentation from cloud infrastructure using Ansible automation.
+
+*Estimated time to complete: 15 minutes*
+
+---
+
+== Lab Overview
+
+Welcome to the third challenge. In this lab, you will generate a dynamic HTML website using the structured data gathered in the previous challenge.
+
+First, log in to the Ansible Automation Platform UI with the following credentials.
+
+.Login Credentials
+[cols="1,2a"]
+|===
+| Username | `admin`
+| Password | `admin`
+|===
+
+---
+
+== Task 1: Create a New Job Template
+
+You will start by creating a job template that runs a playbook to generate the cloud report.
+
+. **Navigate to the Templates page.**
++
+From the left navigation menu, select *Templates*.
++
+image::https://github.com/HichamMourad/awsinfravis25/blob/master/images/menu_templates.png?raw=true[Templates link in menu, opts="border"]
+
+. **Initiate the creation of a new job template.**
++
+Click the **Create template** button, then select **Create job template**.
++
+image::https://github.com/HichamMourad/awsinfravis25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
+
+. **Enter the job template details.**
++
+Fill out the form with the following information:
++
+[cols="1,1"]
+|===
+| Parameter | Value
+| Name | `Create Cloud Report`
+| Job Type | `Run`
+| Inventory | `Demo Inventory`
+| Project | `AWS Demos Project`
+| Execution Environment | `AWS Execution Environment`
+| Playbook | `playbooks/cloud_report.yml`
+| Credentials | `AWS_Credential` and `SSH Controller Credential`
+|===
++
+IMPORTANT: This job template requires two credentials. One is for retrieving information from AWS, and the second is for connecting via SSH to the report server to generate the report.
+
+. **Save the job template.**
++
+Click the blue **Save** button.
+
+---
+
+== Task 2: Add a Survey
+
+Next, you will add a survey to allow the user to specify which server will host the generated HTML report.
+
+. **Open the job template's settings.**
++
+Navigate to the *Templates* page and click on the name of the `Create Cloud Report` job template.
+
+. **Navigate to the Survey tab.**
++
+At the top of the template's details page, click the **Survey** tab.
++
+image::https://github.com/IPvSean/pictures_for_github/blob/master/survey_tab.png?raw=true[Survey Tab, 400, opts="border"]
+
+. **Create a new survey question.**
++
+Click the blue **Add** button.
+
+. **Configure the survey question.**
++
+Fill out the form with the following values:
++
+[cols="1,1"]
+|===
+| Parameter | Value
+| Question | `Which server do you want to host the report?`
+| Answer variable name | `_hosts`
+| Answer type | `Text`
+| Default answer | `ansible-1`
+|===
+
+. **Save the survey question.**
++
+Click the blue **Save** button.
+
+. **Enable the survey.**
++
+Make sure to click the toggle switch to enable the survey.
++
+image::https://github.com/HichamMourad/awsinfravis25/blob/master/images/survey_toggle_short.png?raw=true[Enable survey toggle, 600, opts="border"]
++
+NOTE: For this lab, we will host the report on the `ansible-1` host. However, this survey demonstrates how you can make the destination configurable, allowing you to host dynamic documentation anywhere, including on services like Amazon S3.
+
+---
+
+== Task 3: Launch the Job Template
+
+Now you are ready to run the job and generate the report.
+
+. **Launch the job template.**
++
+From the *Templates* page, find the `Create Cloud Report` template and click the **Launch** icon (🚀).
++
+image::https://github.com/IPvSean/pictures_for_github/blob/master/launch_job.png?raw=true[Launch Job Icon, 30, opts="border"]
+
+. **Complete the survey.**
++
+When prompted by the survey, accept the default host (`ansible-1`) and launch the job.
+
+. **Review the playbook execution.**
++
+This playbook uses two roles:
++
+. The first role, `retrieve_info`, gathers structured data for VPCs, EC2 instances, and IGWs. link:https://github.com/ansible-cloud/aws_demos/tree/master/roles/retrieve_info[View source code].
+. The second role, `build_report`, installs a web server, copies assets (CSS, images), and uses the structured data to generate an HTML report. link:https://github.com/ansible-cloud/aws_demos/tree/master/roles/build_report[View source code].
+
+. **View the generated report.**
++
+Once the job completes, navigate to the **Dynamic Report** tab in your lab window. You may need to refresh the page (⟳). Click on the gray boxes with the caret (▸) to expand the tables.
++
+The report will look similar to this:
++
+image::https://github.com/IPvSean/pictures_for_github/blob/master/cloud_report.png?raw=true[Picture of the cloud report, opts="border"]
+
+---
+
+== Task 4: Compare Regions
+
+A cloud operator can use this report to gain quick awareness of their cloud footprint across different regions. This helps answer important questions, such as:
+
+* How can I identify unused VPCs that can be safely deleted?
+* Which regions are actively running instances?
+* Which regions contain stopped instances that could be restarted?
+
+This automated report provides a powerful tool for resource management and cost optimization.
+
+---
+
+== Finished!
+
+You have successfully completed this lab. Press the `Check` button in your lab environment to validate your work.
+
+== Troubleshooting
+
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+visibility+(aap2.5)&assignees=hichammourad[open an issue on GitHub].
