@@ -1,49 +1,56 @@
-= Lab Guide: Retrieving Cloud Information with Job Templates
+:doctype: book
 :toc:
 :toc-title: Table of Contents
 :sectnums:
 :icons: font
 
-This guide explains how to use a Job Template to retrieve information from a public cloud provider.
+= Lab Guide: Filtering Cloud Resources by Tags
+_A guide to using filters and tags to control information retrieval from a public cloud._
 
-*Estimated time to complete: 20 minutes*
+*Estimated time to complete: 15 minutes*
 
 ---
 
 == Lab Overview
 
-Welcome to the second challenge. In this lab, you will learn how to retrieve public cloud information with a job template in the automation controller.
+Welcome to the second challenge in the Cloud Optimization lab. In this guide, you will learn how to use filters to control what information is retrieved from your cloud provider. One of the most common and powerful ways to filter resources is by using tags.
 
-First, log in to the Ansible Automation Platform UI with the following credentials.
+---
 
-.Login Credentials
+== Task 1: Log into Ansible Automation Platform
+
+First, you will log in to the automation controller to begin the lab exercises.
+
+. **Navigate to the Automation Controller UI.**
++
+Click on the **Automation Controller** tab at the top of your lab window.
+
+. **Log in with the provided credentials.**
++
 [cols="1,2a"]
 |===
+| Parameter | Value
 | Username | `admin`
 | Password | `ansible123!`
 |===
 
+After logging in, you will land on the main dashboard.
+
 ---
 
-== Task 1: Create a Job Template
+== Task 2: Create a Job Template with a Filter
 
-To create a **Job Template**, you need three main components:
-
-* An **inventory** to run the automation against.
-* A **credential** to access the cloud provider's API.
-* A **project** to synchronize your Ansible Playbooks from.
-
-In this task, we will combine these components into a new job template.
+Next, you will create a job template that runs a playbook to retrieve specific EC2 instances based on a tag filter.
 
 . **Navigate to the Templates page.**
 +
-In the left navigation menu, select *Templates*.
+In the left navigation menu, go to *Automation Execution* → *Templates*.
 
 . **Initiate the creation of a new job template.**
 +
 Click the **Create template** button, then select **Create job template**.
 +
-image::https://github.com/HichamMourad/awsinfravis25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
+image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
 
 . **Enter the job template details.**
 +
@@ -52,67 +59,102 @@ Fill out the form with the following information:
 [cols="1,1"]
 |===
 | Parameter | Value
-| Name | `Retrieve VPC info`
+| Name | `Retrieve INSTANCES by tag`
 | Job Type | `Run`
 | Inventory | `Demo Inventory`
 | Project | `AWS Demos Project`
 | Execution Environment | `AWS Execution Environment`
-| Playbook | `playbooks/info_vpcs.yml`
+| Playbook | `playbooks/lab3-challenge2.yml`
 | Credentials | `AWS_Credential`
 |===
 +
-TIP: When selecting the credential, you may need to filter by the `Amazon Web Services` credential type to find the `AWS_Credential`.
+TIP: To find the `AWS_Credential`, you may need to filter the *Credential Type* to `Amazon Web Services`.
 
 . **Save the job template.**
 +
-Click the blue **Save** button.
+Scroll to the bottom and click the blue **Save** button.
+
+NOTE: This playbook uses a default filter to find all instances where the `Name` tag starts with `rhel`. The filter is defined as an `extra_var` in the playbook.
++
+[source,yaml]
+----
+filter_input:
+  "tag:Name": "rhel*"
+----
 
 NOTE: The Ansible Playbooks for this lab are sourced from the following project: link:https://github.com/ansible-cloud/aws_demos[ansible-cloud/aws_demos].
 
 ---
 
-== Task 2: Launch the Job Template
+== Task 3: Launch the Job Template
 
-Now that the template is created, let's run it.
-
-. **Navigate to the Templates page.**
-+
-If you are not already there, select *Templates* from the left navigation menu.
+Now, you will run the template to see the default filter in action.
 
 . **Launch the job template.**
 +
-Find the `Retrieve VPC info` job template in the list and click the **Launch** icon (🚀).
+Navigate back to the *Templates* page, find the `Retrieve INSTANCES by tag` job template, and click the **Launch** icon (🚀).
 +
 image::https://github.com/IPvSean/pictures_for_github/blob/master/launch_job.png?raw=true[Launch Job Icon, 80, opts="border"]
 
-. **Examine the job output.**
+. **Understand the playbook execution.**
 +
-This playbook runs two tasks:
+This playbook runs three main tasks:
 +
-* The first task, `amazon.aws.ec2_vpc_net_info`, retrieves structured data for all VPCs in the `us-east-1` region.
-* The second task, `ansible.builtin.debug`, prints this data to the job output.
+* It uses the `amazon.aws.ec2_instance_info` module to find instances matching the `filter_input`.
 +
-To view the data, click on the **Print vpc info to terminal** task. In the details pane that appears, select the **JSON** tab to see the structured data retrieved from AWS. We have pre-configured one VPC in this region.
+[source,yaml]
+----
+- name: Retrieve info for the EC2 instances
+  amazon.aws.ec2_instance_info:
+    region: "{{ ec2_region }}"
+    filters: "{{ filter_input }}"
+  register: ec2_instance_info
+----
 +
-image::https://github.com/HichamMourad/awsinfravis25/blob/master/images/vpc_output.png?raw=true[VPC structured data output, 400, opts="border"]
+* It uses the `debug` module and the `length` filter to count how many instances were found.
 +
-This structured data will be used in a future challenge to create dynamic documentation.
+[source,yaml]
+----
+- name: Display how many instances match the filter
+  debug:
+    msg:
+      - "There are {{ ec2_instance_info.instances | length }} instances that match your filter"
+----
++
+* It loops through the results and prints the `Name`, `instance_id`, and all `tags` for each instance.
++
+[source,yaml]
+----
+- name: Display AWS EC2 info and tags information to terminal
+  debug:
+    msg:
+      - "{{ item.tags['Name'] | default('The tag *Name* Does not exist') }}"
+      - "{{ item.instance_id }}"
+      - "{{ item.tags }}"
+  loop: "{{ ec2_instance_info.instances }}"
+----
+
+. **Review the job output.**
++
+The job output will show that two instances matched the default filter (`"tag:Name": "rhel*"`).
++
+image::https://github.com/IPvSean/pictures_for_github/blob/master/job_output_optimization_challege2.png?raw=true[Job output showing two instances found, opts="border"]
 
 ---
 
-== Task 3: Create a Survey
+== Task 4: Create a Survey to Control the Filter
 
-Surveys allow you to prompt a user for information when a job template is launched, making your automation more interactive and flexible.
+To make the job template more flexible, you will add a survey that allows the user to specify a custom filter at launch time.
 
 . **Open the job template's settings.**
 +
-Navigate back to the *Templates* page and click on the name of the `Retrieve VPC info` job template.
+Navigate back to the *Templates* page and click on the name of the `Retrieve INSTANCES by tag` job template.
++
+image::https://github.com/IPvSean/pictures_for_github/blob/master/retrieve_instances_job.png?raw=true[Job template details page, 400, opts="border"]
 
 . **Navigate to the Survey tab.**
 +
 At the top of the template's details page, click the **Survey** tab.
-+
-image::https://github.com/IPvSean/pictures_for_github/blob/master/survey_tab.png?raw=true[Survey Tab, 400, opts="border"]
 
 . **Create a new survey question.**
 +
@@ -120,88 +162,51 @@ Click the blue **Add** button.
 
 . **Configure the survey question.**
 +
-Fill out the form with the following values:
+Fill out the survey form with the following values:
 +
 [cols="1,1"]
 |===
 | Parameter | Value
-| Question | `What AWS region?`
-| Description | `Choose the AWS region you want to query.`
-| Answer variable name | `ec2_region`
-| Answer type | `Multiple Choice (single select)`
+| Question | `Provide an EC2 filter`
+| Description | `Provide the dictionary filter for AWS.`
+| Answer variable name | `filter_input`
+| Answer type | `Textarea`
 | Required | Check the box ☑️
-| Multiple Choice Options | `us-east-1`, `us-east-2`, `eu-central-1`
 |===
-
-. **Set the default answer.**
-+
-Click the radio button next to `us-east-1` to make it the default option.
 
 . **Save the survey question.**
 +
-Click the blue **Save** button.
+Scroll to the bottom and click **Save**.
 
 . **Enable the survey.**
 +
-After saving, you must **enable the survey** by clicking the toggle switch at the top of the survey page.
+You must **enable the survey** by clicking the toggle switch at the top of the survey page. The text will change from `SURVEY OFF` to `SURVEY ON`.
 +
-image::https://github.com/HichamMourad/awsinfravis25/blob/master/images/survey_toggle.png?raw=true[Enable Survey Toggle, 600, opts="border"]
+image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/survey_toggle_short.png?raw=true[Enable Survey Toggle, 600, opts="border"]
 
-. **Launch the template again.**
+. **Launch the template with a new filter.**
 +
-Click the **Launch** button. This time, you will be prompted with the survey question you just created.
+Click the **Launch** button. This time, a survey will prompt you for input. Enter the following text into the text area to find only the instance named `rhel1`:
 +
-image::https://github.com/IPvSean/pictures_for_github/blob/master/what_region.png?raw=true[Survey Prompt, 200, opts="border"]
+[source,text]
+----
+"tag:Name": "rhel1"
+----
 +
-Feel free to choose a different region and verify that the output changes.
+Launch the job and observe that this time, only one instance is returned in the output.
 
----
-
-== Task 4: Create More Job Templates
-
-You can create similar job templates to gather information about other AWS resources.
-
-. **Create a job template to retrieve EC2 instance information.**
-+
-[cols="1,1"]
-|===
-| Parameter | Value
-| Name | `Retrieve EC2 instances info`
-| Playbook | `playbooks/info_instances.yml`
-|===
-+
-NOTE: Use the same Inventory, Project, Execution Environment, and Credentials as the first template.
-
-. **Create a job template to retrieve Internet Gateway (IGW) information.**
-+
-[cols="1,1"]
-|===
-| Parameter | Value
-| Name | `Retrieve IGWs info`
-| Playbook | `playbooks/info_igws.yml`
-|===
-
-. **(Optional) Create a combined information job template.**
-+
-This template combines information from VPCs, EC2 instances, and IGWs to provide a holistic view of your cloud infrastructure.
-+
-[cols="1,1"]
-|===
-| Parameter | Value
-| Name | `Retrieve Combined info`
-| Playbook | `playbooks/info_combined.yml`
-|===
-+
-When you run this combined template, a cloud operator can quickly see how many instances are online in a given region, which VPCs they reside on, and their associated IGWs. This combined view helps identify unused resources, such as the retired VPCs shown in the example output below.
-+
-image::https://github.com/IPvSean/pictures_for_github/blob/master/cloud_awareness.png?raw=true[Combined cloud awareness output, opts="border"]
+TIP: Try launching the job again with some other tag combinations to see what is returned:
+* `"tag:Index": "0"`
+* `"tag:ansible-demo": "false"`
+* `"tag:ansible-demo": "true"`
+* `"tag:instruqt": "true"`
 
 ---
 
 == Next Steps
 
-You have successfully completed this lab. Press the `Check` button in the lab environment to proceed to the next challenge.
+You have successfully completed this lab. Press the `Check` button in your lab environment to proceed to the next challenge.
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+visibility+(aap2.5)&assignees=hichammourad[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[open an issue on GitHub].
