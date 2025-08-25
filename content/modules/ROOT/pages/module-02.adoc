@@ -1,5 +1,5 @@
 :doctype: book
-:toc:
+:notoc:
 :toc-title: Table of Contents
 :sectnums:
 :icons: font
@@ -7,17 +7,36 @@
 = Lab Guide: Filtering Cloud Resources by Tags
 _A guide to using filters and tags to control information retrieval from a public cloud._
 
+---
+
+== Lab Briefing
+
+This section provides an overview of the lab challenge and instructions for getting started.
+
+=== Challenge Summary
+
+In this challenge, you will use filters to control what information is retrieved from your cloud provider. One of the most common and powerful ways to filter resources is by using **tags**.
+
+Tags are key-value pairs that act as metadata for organizing your cloud resources. Each tag has two parts:
+
+* A tag **key** (e.g., `CostCenter`, `operating_system`, `owner`).
+* A tag **value** (e.g., `1234`, `windows`, `nuno`).
+
+You can use tags to categorize resources by purpose, owner, environment, or any other criteria you define.
+
+=== Getting Started
+
+That is the end of your challenge briefing! Please click the green **Start** button in the bottom right corner of this window if the lab has not already started.
+
+image:https://github.com/IPvSean/pictures_for_github/blob/master/start_button.png?raw=true[Start Button, 100, opts="border"]
+
+---
+
+== Lab Guide: Hands-On Tasks
+
 *Estimated time to complete: 15 minutes*
 
----
-
-== Lab Overview
-
-Welcome to the second challenge in the Cloud Optimization lab. In this guide, you will learn how to use filters to control what information is retrieved from your cloud provider. One of the most common and powerful ways to filter resources is by using tags.
-
----
-
-== Task 1: Log into Ansible Automation Platform
+=== Task 1: Log into Ansible Automation Platform
 
 First, you will log in to the automation controller to begin the lab exercises.
 
@@ -29,28 +48,25 @@ Click on the **Automation Controller** tab at the top of your lab window.
 +
 [cols="1,2a"]
 |===
-| Parameter | Value
 | Username | `admin`
 | Password | `ansible123!`
 |===
 
 After logging in, you will land on the main dashboard.
 
----
-
-== Task 2: Create a Job Template with a Filter
+=== Task 2: Create a Job Template with a Filter
 
 Next, you will create a job template that runs a playbook to retrieve specific EC2 instances based on a tag filter.
 
 . **Navigate to the Templates page.**
 +
-In the left navigation menu, go to *Automation Execution* → *Templates*.
+In the left navigation menu, go to **Automation Execution** → **Templates**.
 
 . **Initiate the creation of a new job template.**
 +
 Click the **Create template** button, then select **Create job template**.
 +
-image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
+image:https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
 
 . **Enter the job template details.**
 +
@@ -84,17 +100,15 @@ filter_input:
 
 NOTE: The Ansible Playbooks for this lab are sourced from the following project: link:https://github.com/ansible-cloud/aws_demos[ansible-cloud/aws_demos].
 
----
-
-== Task 3: Launch the Job Template
+=== Task 3: Launch the Job Template
 
 Now, you will run the template to see the default filter in action.
 
 . **Launch the job template.**
 +
-Navigate back to the *Templates* page, find the `Retrieve INSTANCES by tag` job template, and click the **Launch** icon (🚀).
+Navigate back to the **Templates** page, find the `Retrieve INSTANCES by tag` job template, and click the **Launch** icon (🚀).
 +
-image::https://github.com/IPvSean/pictures_for_github/blob/master/launch_job.png?raw=true[Launch Job Icon, 80, opts="border"]
+image:https://github.com/IPvSean/pictures_for_github/blob/master/launch_job.png?raw=true[Launch Job Icon, 80, opts="border"]
 
 . **Understand the playbook execution.**
 +
@@ -138,19 +152,17 @@ This playbook runs three main tasks:
 +
 The job output will show that two instances matched the default filter (`"tag:Name": "rhel*"`).
 +
-image::https://github.com/IPvSean/pictures_for_github/blob/master/job_output_optimization_challege2.png?raw=true[Job output showing two instances found, opts="border"]
+image:https://github.com/IPvSean/pictures_for_github/blob/master/job_output_optimization_challege2.png?raw=true[Job output showing two instances found, opts="border"]
 
----
-
-== Task 4: Create a Survey to Control the Filter
+=== Task 4: Create a Survey to Control the Filter
 
 To make the job template more flexible, you will add a survey that allows the user to specify a custom filter at launch time.
 
 . **Open the job template's settings.**
 +
-Navigate back to the *Templates* page and click on the name of the `Retrieve INSTANCES by tag` job template.
+Navigate back to the **Templates** page and click on the name of the **Retrieve INSTANCES by tag** job template.
 +
-image::https://github.com/IPvSean/pictures_for_github/blob/master/retrieve_instances_job.png?raw=true[Job template details page, 400, opts="border"]
+image:https://github.com/IPvSean/pictures_for_github/blob/master/retrieve_instances_job.png?raw=true[Job template details page, 400, opts="border"]
 
 . **Navigate to the Survey tab.**
 +
@@ -182,7 +194,7 @@ Scroll to the bottom and click **Save**.
 +
 You must **enable the survey** by clicking the toggle switch at the top of the survey page. The text will change from `SURVEY OFF` to `SURVEY ON`.
 +
-image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/survey_toggle_short.png?raw=true[Enable Survey Toggle, 600, opts="border"]
+image:https://github.com/HichamMourad/awsoptimize25/blob/master/images/survey_toggle_short.png?raw=true[Enable Survey Toggle, 600, opts="border"]
 
 . **Launch the template with a new filter.**
 +
@@ -197,7 +209,7 @@ Launch the job and observe that this time, only one instance is returned in the 
 
 TIP: Try launching the job again with some other tag combinations to see what is returned:
 * `"tag:Index": "0"`
-* `"tag:ansible-demo": "false"`
+* `"tag-key": "ansible-demo"`
 * `"tag:ansible-demo": "true"`
 * `"tag:instruqt": "true"`
 
@@ -209,4 +221,4 @@ You have successfully completed this lab. Press the `Check` button in your lab e
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[orset=utf
