@@ -1,23 +1,50 @@
-:doctype: book
+= Lab Guide: Cloud Optimization with Ansible
 :toc:
 :toc-title: Table of Contents
 :sectnums:
 :icons: font
 
-= Lab Guide: Cloud Optimization with Dynamic Inventory
-_A guide to understanding basic optimization exercises for public cloud environments._
+_A guide to understanding basic cloud optimization exercises, starting with dynamic inventory and resource tagging._
+
+---
+
+== Lab Briefing
+
+This section provides an overview of the lab environment and the importance of resource tagging in the cloud.
+
+=== Lab Instructions
+
+Please click the green **Start** button on the bottom right corner to create the lab environment if it has not already started. To navigate through this briefing, click the white `>` arrow on the right.
+
+image:https://github.com/IPvSean/pictures_for_github/blob/master/start_button.png?raw=true[Start Button, 100, opts="border"]
+
+=== Lab Diagram
+
+The lab topology consists of one Ansible Automation Platform controller node and two Red Hat Enterprise Linux (RHEL) nodes running in Amazon Web Services (AWS) Elastic Compute Cloud (EC2).
+
+image:https://github.com/IPvSean/pictures_for_github/blob/master/aws-diagram.png?raw=true[Lab topology diagram, 600, opts="border"]
+
+=== The Importance of Cloud Tags
+
+Cloud environments are composed of numerous resources, including instances, containers, networks, and more. To effectively manage these resources, it is crucial to use **tags**. Tags are simple key-value pairs that help you organize, filter, and track your assets.
+
+image::https://github.com/IPvSean/pictures_for_github/blob/master/aws_resources.png?raw=true[Various AWS cloud resources, opts="border"]
+
+For example, the tags on this EC2 instance clearly define its purpose, owner, and provisioning details, which is invaluable for cost management, security audits, and operational clarity.
+
+image::https://github.com/IPvSean/pictures_for_github/blob/master/many_aws_tags.png?raw=true[Example of tags on an AWS EC2 instance, opts="border"]
+
+This concludes your lab briefing.
+
+---
+
+== Lab Guide: Hands-On Tasks
+
+Welcome to the `Ansible Hybrid Cloud Automation - Cloud Optimization lab`. In this first challenge, you will learn about the pre-configured Dynamic Inventory for this lab and see how it uses tags to identify resources.
 
 *Estimated time to complete: 10 minutes*
 
----
-
-== Lab Overview
-
-Welcome to the `Ansible Hybrid Cloud Automation - Cloud Optimization` lab. In this guide, you will learn about a pre-configured Dynamic Inventory and how to use resource tags to manage and report on your cloud infrastructure.
-
----
-
-== Task 1: Log into Ansible Automation Platform
+=== Task 1: Log into Ansible Automation Platform
 
 First, you will log in to the automation controller to begin the lab exercises.
 
@@ -29,28 +56,25 @@ Click on the **Automation Controller** tab at the top of your lab window.
 +
 [cols="1,2a"]
 |===
-| Parameter | Value
 | Username | `admin`
 | Password | `ansible123!`
 |===
 
 After logging in, you will land on the main dashboard.
 
----
-
-== Task 2: Examine the Dynamic Inventory
+=== Task 2: Examine the Dynamic Inventory
 
 In this task, you will explore the pre-configured dynamic inventory and inspect the host variables and tags that are automatically discovered from AWS.
 
 . **Navigate to the Inventories menu.**
 +
-In the left navigation menu, go to *Infrastructure* → *Inventories*.
+In the left navigation menu, go to **Automation Execution** → **Infrastructure** → **Inventories**.
 
 . **Select the AWS Inventory.**
 +
 Click on the inventory named `AWS Inventory`.
 +
-image::https://github.com/IPvSean/pictures_for_github/blob/master/aws_inventory.png?raw=true[AWS Inventory details page, 250, opts="border"]
+image:https://github.com/IPvSean/pictures_for_github/blob/master/aws_inventory.png?raw=true[AWS Inventory details page, 250, opts="border"]
 
 . **View the hosts.**
 +
@@ -64,25 +88,23 @@ Click on one of the hosts to open its details page.
 +
 On the host's *Details* tab, scroll down to the `VARIABLES` section. Note the `tags` section, which contains key-value pairs discovered directly from the EC2 instance. We will use these tags in a later step.
 +
-image::https://github.com/IPvSean/pictures_for_github/blob/master/tags.png?raw=true[EC2 instance tags in automation controller, 500, opts="border"]
+image:https://github.com/IPvSean/pictures_for_github/blob/master/tags.png?raw=true[EC2 instance tags in automation controller, 500, opts="border"]
 
-TIP: To see these same tags in the AWS console, you can open the *AWS console* tab in your lab environment, log in, and navigate to the EC2 service to inspect the instances.
+TIP: To see these same tags in the AWS console, you can open the **AWS console** tab in your lab environment, log in, and navigate to the EC2 service to inspect the instances.
 
----
-
-== Task 3: Create a Job Template
+=== Task 3: Create a Job Template
 
 Next, you will create a job template to run a playbook that retrieves and displays tag information from your AWS resources.
 
 . **Navigate to the Templates page.**
 +
-From the left navigation menu, select *Templates*.
+From the left navigation menu, select **Automation Execution** → **Templates**.
 
 . **Initiate the creation of a new job template.**
 +
 Click the **Create template** button, then select **Create job template**.
 +
-image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
+image:https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
 
 . **Enter the job template details.**
 +
@@ -108,17 +130,15 @@ Scroll to the bottom and click the blue **Save** button.
 
 NOTE: The Ansible Playbooks for this lab are sourced from the following project: link:https://github.com/ansible-cloud/aws_demos[ansible-cloud/aws_demos].
 
----
-
-== Task 4: Launch the Job Template and Review Output
+=== Task 4: Launch the Job Template and Review Output
 
 Finally, you will run the job template and examine the structured data it collects.
 
 . **Launch the job template.**
 +
-Navigate back to the *Templates* page, find the `Retrieve tag information` job template, and click the **Launch** icon (🚀).
+Navigate back to the **Templates** page, find the `Retrieve tag information` job template, and click the **Launch** icon (🚀).
 +
-image::https://github.com/IPvSean/pictures_for_github/blob/master/launch_job.png?raw=true[Launch Job Icon, 80, opts="border"]
+image:https://github.com/IPvSean/pictures_for_github/blob/master/launch_job.png?raw=true[Launch Job Icon, 80, opts="border"]
 
 . **Understand the playbook execution.**
 +
@@ -144,4 +164,16 @@ The final task in the playbook uses a loop to display the information for each i
   loop: "{{ ec2_instance_info.instances }}"
 ----
 +
-The output in the automation controller will show this structured data clearly for each resource
+The output in the automation controller will show this structured data clearly for each resource.
++
+image:https://github.com/IPvSean/pictures_for_github/blob/master/job_output.png?raw=true[JSON output from job run, opts="border"]
+
+---
+
+== Next Steps
+
+You have successfully completed this lab. Press the `Check` button in your lab environment to proceed to the next challenge.
+
+== Troubleshooting
+
+If you have encountered an issue or have noticed somethi�?
