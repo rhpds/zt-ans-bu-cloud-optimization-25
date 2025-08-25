@@ -1,23 +1,51 @@
 :doctype: book
-:toc:
+:notoc:
 :toc-title: Table of Contents
 :sectnums:
 :icons: font
 
 = Lab Guide: Building an Optimization Workflow
-_A guide to creating a workflow to identify and act on cloud resources._
+_A guide to creating a workflow to filter instances and stop them using Ansible Automation Platform._
+
+---
+
+== Lab Briefing
+
+This section provides an overview of the lab challenge and instructions for getting started.
+
+=== Challenge Summary
+
+In this challenge, you will create a **workflow**. Public cloud environments are often used by many different teams, and by using automation, you can create workflows to help enforce organizational policies.
+
+image::https://github.com/IPvSean/pictures_for_github/blob/master/full_workflow.png?raw=true[Example of a completed workflow, opts="border"]
+
+=== What is Infrastructure Optimization?
+
+While a lot of cloud automation focuses on provisioning and de-provisioning, we can also use automation to help tame our public cloud environments and keep them under control. This is often called Day-2 operations or infrastructure optimization.
+
+image::https://github.com/IPvSean/pictures_for_github/blob/master/optimize_circle.png?raw=true[The cycle of infrastructure optimization, opts="border"]
+
+This can include tasks like identifying non-compliant resources, scheduling instances to be turned off outside of business hours, or finding and removing orphaned resources.
+
+image::../assets/example_optimization.png[Example of identifying a non-compliant EC2 instance, opts="border"]
+
+image::../assets/example2_optimization.png[Example of scheduling an instance to be stopped, opts="border"]
+
+=== Getting Started
+
+That is the end of your challenge briefing! Please click the green **Start** button in the bottom right corner of this window if the lab has not already started.
+
+image:https://github.com/IPvSean/pictures_for_github/blob/master/start_button.png?raw=true[Start Button, 100, opts="border"]
+
+---
+
+== Lab Guide: Hands-On Tasks
 
 *Estimated time to complete: 20 minutes*
 
----
+In this third challenge, you will create a link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/using_automation_execution/controller-workflow-job-templates#controller-create-workflow-template[workflow] that uses your existing job template to find specific instances and then performs an action on them.
 
-== Lab Overview
-
-Welcome to the third challenge. In this guide, you will create a link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/using_automation_execution/controller-workflow-job-templates#controller-create-workflow-template[workflow] that combines job templates to first identify specific cloud resources and then perform an action on them.
-
----
-
-== Task 1: Log into Ansible Automation Platform
+=== Task 1: Log into Ansible Automation Platform
 
 First, you will log in to the automation controller to begin the lab exercises.
 
@@ -29,28 +57,25 @@ Click on the **Automation Controller** tab at the top of your lab window.
 +
 [cols="1,2a"]
 |===
-| Parameter | Value
 | Username | `admin`
-| Password | `ansible123!`
+| Password | `ansible12-3!`
 |===
 
 After logging in, you will land on the main dashboard.
 
----
-
-== Task 2: Create the "Stop Instances" Job Template
+=== Task 2: Create the "Stop Instances" Job Template
 
 You will start by creating a job template whose purpose is to stop EC2 instances.
 
 . **Navigate to the Templates page.**
 +
-In the left navigation menu, go to *Automation Execution* → *Templates*.
+In the left navigation menu, go to **Automation Execution** → **Templates**.
 
 . **Initiate the creation of a new job template.**
 +
 Click the **Create template** button, then select **Create job template**.
 +
-image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
+image:https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new job template, 600, opts="border"]
 
 . **Enter the job template details.**
 +
@@ -85,22 +110,20 @@ This playbook contains a single task that uses the `amazon.aws.ec2_instance` mod
     region: "{{ ec2_region }}"
     state: stopped
     instance_ids: "{{ identified_instances }}"
-  when: identified_instances | length  > 0
+  when: identified_instances | length > 0
 ----
 
 NOTE: The Ansible Playbooks for this lab are sourced from the following project: link:https://github.com/ansible-cloud/aws_demos[ansible-cloud/aws_demos].
 
----
-
-== Task 3: Build the AWS Optimization Workflow
+=== Task 3: Build the AWS Optimization Workflow
 
 Now, you will combine the template from the previous lab (`Retrieve INSTANCES by tag`) with the new `Stop instances` template into a single workflow.
 
 . **Navigate to the Templates page and initiate workflow creation.**
 +
-Go to *Automation Execution* → *Templates*, click the **Create template** button, and select **Create workflow job template**.
+Go to **Automation Execution** → **Templates**, click the **Create template** button, and select **Create workflow job template**.
 +
-image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new workflow job template, 600, opts="border"]
+image:https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_templates.png?raw=true[Create a new workflow job template, 600, opts="border"]
 
 . **Enter the workflow details.**
 +
@@ -139,23 +162,21 @@ d. Click **Next**, then **Save**.
 +
 In the top right corner of the Visualizer, click **Save**. Your completed workflow should look like this:
 +
-image::https://github.com/HichamMourad/awsoptimize25/blob/master/images/c3workflowt3.png?raw=true[Completed workflow diagram, 600, opts="border"]
+image:https://github.com/HichamMourad/awsoptimize25/blob/master/images/c3workflowt3.png?raw=true[Completed workflow diagram, 600, opts="border"]
 
----
-
-== Task 4: Launch the Workflow
+=== Task 4: Launch the Workflow
 
 Now you are ready to run the complete workflow.
 
 . **Navigate to the Templates page.**
 +
-Go to *Automation Execution* → *Templates*.
+Go to **Automation Execution** → **Templates**.
 
 . **Launch the workflow.**
 +
 Find the `AWS Workflow` in the list and click the **Launch** icon (🚀).
 +
-image::https://github.com/IPvSean/pictures_for_github/blob/master/launch_job.png?raw=true[Launch Job Icon, 80, opts="border"]
+image:https://github.com/IPvSean/pictures_for_github/blob/master/launch_job.png?raw=true[Launch Job Icon, 80, opts="border"]
 
 . **Monitor the visualizer.**
 +
@@ -166,9 +187,7 @@ The workflow visualizer will show the real-time progress. The workflow will:
 +
 You can click on any node in the visualizer to view the `Output` tab for that specific job.
 
----
-
-== Task 5: Verify the Instance is Stopped
+=== Task 5: Verify the Instance is Stopped
 
 Finally, you will confirm the result in the AWS Management Console.
 
@@ -182,13 +201,13 @@ WARNING: Be careful to avoid extra spaces when copying and pasting the credentia
 +
 In the top search bar, search for and select `EC2`.
 +
-image::https://github.com/IPvSean/pictures_for_github/blob/master/aws_ec2.png?raw=true[AWS console search for EC2, 550, opts="border"]
+image:https://github.com/IPvSean/pictures_for_github/blob/master/aws_ec2.png?raw=true[AWS console search for EC2, 550, opts="border"]
 
 . **Check the instance status.**
 +
 Go to the *Instances* page. Make sure you are in the **N. Virginia / us-east-1** region. You should see one instance in the `Running` state and the `rhel1` instance in the `Stopped` state.
 +
-image::https://github.com/IPvSean/pictures_for_github/blob/master/aws_instances_status.png?raw=true[Instance status in AWS console, 550, opts="border"]
+image:https://github.com/IPvSean/pictures_for_github/blob/master/aws_instances_status.png?raw=true[Instance status in AWS console, 550, opts="border"]
 
 ---
 
@@ -208,4 +227,4 @@ Press the `Check` button in your lab environment to complete the challenge.
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[open, please
