@@ -208,9 +208,13 @@ Click the **Launch** button. This time, a survey will prompt you for input. Ente
 Launch the job and observe that this time, only one instance is returned in the output.
 
 TIP: Try launching the job again with some other tag combinations to see what is returned:
+
 * `"tag:Index": "0"`
+
 * `"tag-key": "ansible-demo"`
+
 * `"tag:ansible-demo": "true"`
+
 * `"tag:instruqt": "true"`
 
 ---
