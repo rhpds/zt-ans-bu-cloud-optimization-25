@@ -1,7 +1,7 @@
 ---
 site:
-  title: Terraform & Red Hat Ansible Automation Platform (AAP 2.5)
-  url: https://redhat-scholars.github.io/course-template
+  title: Hybrid cloud automation: AWS Infrastructure optimization (AAP 2.5)
+  url: https://www.redhat.com/en/interactive-labs/ansible
   start_page: modules::index.adoc
 
 content:
