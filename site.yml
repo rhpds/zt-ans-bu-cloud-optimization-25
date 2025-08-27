@@ -3,12 +3,10 @@ site:
   title: Hybrid cloud automation: AWS Infrastructure optimization (AAP 2.5)
   url: https://www.redhat.com/en/interactive-labs/ansible
   start_page: modules::index.adoc
-
 content:
   sources:
     - url: .
       start_path: content
-
 ui:
   bundle:
     url: https://github.com/rhpds/rhdp_showroom_theme/releases/download/v0.0.1/ui-bundle.zip
@@ -19,14 +17,11 @@ ui:
     - path: .nojekyll
     - path: ui.yml
       contents: "static_files: [ .nojekyll ]"
-
 runtime:
   cache_dir: ./.cache/antora
-
 antora:
   extensions:
     - require: ./content/lib/dev-mode.js
       enabled: false
-
 output:
   dir: ./www
