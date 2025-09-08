@@ -1,6 +1,6 @@
 ---
 site:
-  title: Hybrid cloud automation: AWS Infrastructure optimization (AAP 2.5)
+  title: Hybrid cloud automation, AWS Infrastructure optimization (AAP 2.5)
   url: https://redhat-scholars.github.io/course-template
   start_page: modules::index.adoc
 
