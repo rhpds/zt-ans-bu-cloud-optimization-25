@@ -205,7 +205,7 @@ image:https://github.com/IPvSean/pictures_for_github/blob/master/aws_ec2.png?raw
 
 . **Check the instance status.**
 +
-Go to the *Instances* page. Make sure you are in the **N. Virginia / us-east-1** region. You should see one instance in the `Running` state and the `rhel1` instance in the `Stopped` state.
+Go to the *Instances* page. Make sure you are in the **Ohio / us-east-2** region. You should see one instance in the `Running` state and the `rhel1` instance in the `Stopped` state.
 +
 image:https://github.com/IPvSean/pictures_for_github/blob/master/aws_instances_status.png?raw=true[Instance status in AWS console, 550, opts="border"]
 
