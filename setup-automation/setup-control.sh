@@ -246,6 +246,8 @@ cat <<EOF | tee /tmp/setup.yml
             - 'tag:Name'
           compose: 
             ansible_host: public_ip_address
+          regions:
+            - us-east-2
         state: present
         controller_host: "https://localhost"
         controller_username: admin
