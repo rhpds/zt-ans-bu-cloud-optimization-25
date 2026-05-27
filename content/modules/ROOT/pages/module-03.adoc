@@ -58,7 +58,7 @@ Click on the **Automation Controller** tab at the top of your lab window.
 [cols="1,2a"]
 |===
 | Username | `admin`
-| Password | `ansible12-3!`
+| Password | `ansible123!`
 |===
 
 After logging in, you will land on the main dashboard.
