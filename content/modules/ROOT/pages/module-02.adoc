@@ -77,7 +77,7 @@ Fill out the form with the following information:
 | Parameter | Value
 | Name | `Retrieve INSTANCES by tag`
 | Job Type | `Run`
-| Inventory | `Demo Inventory`
+| Inventory | `AWS Inventory`
 | Project | `AWS Demos Project`
 | Execution Environment | `AWS Execution Environment`
 | Playbook | `playbooks/lab3-challenge2.yml`
