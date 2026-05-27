@@ -115,7 +115,7 @@ Fill out the form with the following information:
 | Parameter | Value
 | Name | `Retrieve tag information`
 | Job Type | `Run`
-| Inventory | `Demo Inventory`
+| Inventory | `AWS Inventory`
 | Project | `AWS Demos Project`
 | Execution Environment | `AWS Execution Environment`
 | Playbook | `playbooks/tag_info_aws.yml`
