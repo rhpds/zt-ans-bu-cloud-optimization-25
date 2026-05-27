@@ -86,7 +86,7 @@ Fill out the form with the following information:
 | Parameter | Value
 | Name | `Stop instances`
 | Job Type | `Run`
-| Inventory | `Demo Inventory`
+| Inventory | `AWS Inventory`
 | Project | `AWS Demos Project`
 | Execution Environment | `AWS Execution Environment`
 | Playbook | `playbooks/stop_aws_ec2_instances.yml`
@@ -97,7 +97,7 @@ TIP: To find the `AWS_Credential`, you may need to filter the *Credential Type* 
 
 . **Save the job template.**
 +
-Scroll to the bottom and click the blue **Save** button.
+Scroll to the bottom and click the blue **Create Job Template** button.
 
 . **Understand the playbook.**
 +
@@ -134,33 +134,33 @@ image:https://github.com/HichamMourad/awsoptimize25/blob/master/images/create_te
 | Organization | `Default`
 |===
 +
-Click **Save**. The Workflow Visualizer will open.
+Click **Create workflow job template**. The Workflow Visualizer will open.
 
 . **Add the first node (Retrieve Instances).**
 +
-Click the **Start** button to add the first step. Configure it as follows:
+Click the **Add step** button to add the first step. Configure it as follows:
 +
 --
 a. **Node Type:** `Job Template`
 b. **Job Template:** Select `Retrieve INSTANCES by tag`. Click **Next**.
 c. **Survey:** In the `Provide an EC2 filter` field, enter `"tag:Name": "rhel1"`.
-d. Click **Next**, then **Save** to add the node.
+d. Click **Next**, then **Finish** to add the node.
 --
 
 . **Add the second node (Stop Instances).**
 +
-Hover over the `Retrieve INSTANCES by tag` node, click the **+** icon, and select *Add node*. Configure it as follows:
+Hover over the `Retrieve INSTANCES by tag` node, click the **+** icon, and select *Add step and link*. Configure it as follows:
 +
 --
 a. **Node Type:** `Job Template`
-b. **Run:** Select `On Success`.
-c. **Job Template:** Select `Stop instances`.
-d. Click **Next**, then **Save**.
+b. **Job Template:** Select `Stop instances`.
+c. **Status:** Select `Run On Success`.
+d. Click **Next**, then **Finish**.
 --
 
 . **Save the workflow.**
 +
-In the top right corner of the Visualizer, click **Save**. Your completed workflow should look like this:
+In the top left corner of the Visualizer, click **Save**. Your completed workflow should look like this:
 +
 image:https://github.com/HichamMourad/awsoptimize25/blob/master/images/c3workflowt3.png?raw=true[Completed workflow diagram, 600, opts="border"]
 
