@@ -162,8 +162,6 @@ The output in the automation controller will show this structured data clearly f
 +
 image:https://github.com/IPvSean/pictures_for_github/blob/master/job_output.png?raw=true[JSON output from job run, opts="border"]
 
----
-
 == Troubleshooting
 
 If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[open and issue on github].

@@ -209,8 +209,6 @@ TIP: Try launching the job again with some other tag combinations to see what is
 
 * `"tag:instruqt": "true"`
 
----
-
 == Troubleshooting
 
 If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[open and issue on github].
