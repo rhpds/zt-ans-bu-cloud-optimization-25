@@ -24,23 +24,15 @@ Tags are key-value pairs that act as metadata for organizing your cloud resource
 
 You can use tags to categorize resources by purpose, owner, environment, or any other criteria you define.
 
-=== Getting Started
-
-That is the end of your challenge briefing! Please click the green **Start** button in the bottom right corner of this window if the lab has not already started.
-
-image:https://github.com/IPvSean/pictures_for_github/blob/master/start_button.png?raw=true[Start Button, 100, opts="border"]
-
----
-
 == Lab Guide: Hands-On Tasks
 
 *Estimated time to complete: 15 minutes*
 
 === Task 1: Log into Ansible Automation Platform
 
-First, you will log in to the automation controller to begin the lab exercises.
+First, you will log in to the Ansible Automation Plaform  to begin the lab exercises.
 
-. **Navigate to the Automation Controller UI.**
+. **Navigate to the Ansible Automation Platform UI.**
 +
 Click on the **Automation Controller** tab at the top of your lab window.
 
@@ -88,7 +80,7 @@ TIP: To find the `AWS_Credential`, you may need to filter the *Credential Type* 
 
 . **Save the job template.**
 +
-Scroll to the bottom and click the blue **Save** button.
+Scroll to the bottom and click the blue **Create Job Template** button.
 
 NOTE: This playbook uses a default filter to find all instances where the `Name` tag starts with `rhel`. The filter is defined as an `extra_var` in the playbook.
 +
@@ -170,7 +162,7 @@ At the top of the template's details page, click the **Survey** tab.
 
 . **Create a new survey question.**
 +
-Click the blue **Add** button.
+Click the blue **Create Survey Question** button.
 
 . **Configure the survey question.**
 +
@@ -188,7 +180,7 @@ Fill out the survey form with the following values:
 
 . **Save the survey question.**
 +
-Scroll to the bottom and click **Save**.
+Scroll to the bottom and click **Create Survey Question** button.
 
 . **Enable the survey.**
 +
@@ -219,10 +211,6 @@ TIP: Try launching the job again with some other tag combinations to see what is
 
 ---
 
-== Next Steps
-
-You have successfully completed this lab. Press the `Check` button in your lab environment to proceed to the next challenge.
-
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[orset=utf
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[open and issue on github].

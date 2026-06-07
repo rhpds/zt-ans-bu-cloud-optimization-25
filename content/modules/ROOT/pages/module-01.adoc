@@ -12,12 +12,6 @@ _A guide to understanding basic cloud optimization exercises, starting with dyna
 
 This section provides an overview of the lab environment and the importance of resource tagging in the cloud.
 
-=== Lab Instructions
-
-Please click the green **Start** button on the bottom right corner to create the lab environment if it has not already started. To navigate through this briefing, click the white `>` arrow on the right.
-
-image:https://github.com/IPvSean/pictures_for_github/blob/master/start_button.png?raw=true[Start Button, 100, opts="border"]
-
 === Lab Diagram
 
 The lab topology consists of one Ansible Automation Platform controller node and two Red Hat Enterprise Linux (RHEL) nodes running in Amazon Web Services (AWS) Elastic Compute Cloud (EC2).
@@ -46,9 +40,9 @@ Welcome to the `Ansible Hybrid Cloud Automation - Cloud Optimization lab`. In th
 
 === Task 1: Log into Ansible Automation Platform
 
-First, you will log in to the automation controller to begin the lab exercises.
+First, you will log in to the Ansible Automation Platform to begin the lab exercises.
 
-. **Navigate to the Automation Controller UI.**
+. **Navigate to the Ansible Automation Platform UI.**
 +
 Click on the **Automation Controller** tab at the top of your lab window.
 
@@ -126,7 +120,7 @@ NOTE: To find the `AWS_Credential`, you may need to filter the *Credential Type*
 
 . **Save the job template.**
 +
-Scroll to the bottom and click the blue **Save** button.
+Scroll to the bottom and click the blue **Create Job Template** button.
 
 NOTE: The Ansible Playbooks for this lab are sourced from the following project: link:https://github.com/ansible-cloud/aws_demos[ansible-cloud/aws_demos].
 
@@ -170,10 +164,6 @@ image:https://github.com/IPvSean/pictures_for_github/blob/master/job_output.png?
 
 ---
 
-== Next Steps
-
-You have successfully completed this lab. Press the `Check` button in your lab environment to proceed to the next challenge.
-
 == Troubleshooting
 
-If you have encountered an issue or have noticed somethi�?
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[open and issue on github].

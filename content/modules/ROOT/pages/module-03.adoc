@@ -27,18 +27,6 @@ image::https://github.com/IPvSean/pictures_for_github/blob/master/optimize_circl
 
 This can include tasks like identifying non-compliant resources, scheduling instances to be turned off outside of business hours, or finding and removing orphaned resources.
 
-image::../assets/example_optimization.png[Example of identifying a non-compliant EC2 instance, opts="border"]
-
-image::../assets/example2_optimization.png[Example of scheduling an instance to be stopped, opts="border"]
-
-=== Getting Started
-
-That is the end of your challenge briefing! Please click the green **Start** button in the bottom right corner of this window if the lab has not already started.
-
-image:https://github.com/IPvSean/pictures_for_github/blob/master/start_button.png?raw=true[Start Button, 100, opts="border"]
-
----
-
 == Lab Guide: Hands-On Tasks
 
 *Estimated time to complete: 20 minutes*
@@ -144,18 +132,18 @@ Click the **Add step** button to add the first step. Configure it as follows:
 a. **Node Type:** `Job Template`
 b. **Job Template:** Select `Retrieve INSTANCES by tag`. Click **Next**.
 c. **Survey:** In the `Provide an EC2 filter` field, enter `"tag:Name": "rhel1"`.
-d. Click **Next**, then **Finish** to add the node.
+d. Click **Next**, **Next**, then **Finish** to add the node.
 --
 
 . **Add the second node (Stop Instances).**
 +
-Hover over the `Retrieve INSTANCES by tag` node, click the **+** icon, and select *Add step and link*. Configure it as follows:
+Hover over the `Retrieve INSTANCES by tag` node, click the **elipsis** icon, and select *Add step and link*. Configure it as follows:
 +
 --
 a. **Node Type:** `Job Template`
 b. **Job Template:** Select `Stop instances`.
 c. **Status:** Select `Run On Success`.
-d. Click **Next**, then **Finish**.
+d. Click **Next**, **Next**, then **Finish**.
 --
 
 . **Save the workflow.**
@@ -221,10 +209,6 @@ You have successfully completed this challenge. This simple lab demonstrates a p
 
 Imagine scheduling a workflow to run nightly, searching for any development instances left running for more than a few hours. This gives cloud teams peace of mind that their infrastructure is not incurring unnecessary charges.
 
-== Next Steps
-
-Press the `Check` button in your lab environment to complete the challenge.
-
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[open, please
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?title=Issue+with+Ansible+Hybrid+Cloud+Automation+-+Infrastructure+optimization&assignees=hichammourad[open and issue on github].
