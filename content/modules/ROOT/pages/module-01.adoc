@@ -44,7 +44,7 @@ First, you will log in to the Ansible Automation Platform to begin the lab exerc
 
 . **Navigate to the Ansible Automation Platform UI.**
 +
-Click on the **Automation Controller** tab at the top of your lab window.
+Click on the **Ansible Automation Platform** tab at the top of your lab window.
 
 . **Log in with the provided credentials.**
 +
@@ -84,7 +84,7 @@ On the host's *Details* tab, scroll down to the `VARIABLES` section. Note the `t
 +
 image:https://github.com/IPvSean/pictures_for_github/blob/master/tags.png?raw=true[EC2 instance tags in automation controller, 500, opts="border"]
 
-TIP: To see these same tags in the AWS console, you can open the **AWS console** tab in your lab environment, log in, and navigate to the EC2 service to inspect the instances.
+TIP: To see these same tags in the AWS console, you can open the **AWS console** in your lab environment by clicking on the **Cloud (AWS)** tab, log in, and navigate to the EC2 service to inspect the instances.
 
 === Task 3: Create a Job Template
 

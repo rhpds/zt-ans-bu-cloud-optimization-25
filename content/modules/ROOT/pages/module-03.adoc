@@ -31,15 +31,15 @@ This can include tasks like identifying non-compliant resources, scheduling inst
 
 *Estimated time to complete: 20 minutes*
 
-In this third challenge, you will create a link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/using_automation_execution/controller-workflow-job-templates#controller-create-workflow-template[workflow] that uses your existing job template to find specific instances and then performs an action on them.
+In this third challenge, you will create a link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/develop-proc_controller_create_workflow_template[workflow] that uses your existing job template to find specific instances and then performs an action on them.
 
 === Task 1: Log into Ansible Automation Platform
 
 First, you will log in to the automation controller to begin the lab exercises.
 
-. **Navigate to the Automation Controller UI.**
+. **Navigate to the Ansible Automation Platform UI.**
 +
-Click on the **Automation Controller** tab at the top of your lab window.
+Click on the **Ansible Automation Platform** tab at the top of your lab window.
 
 . **Log in with the provided credentials.**
 +
@@ -132,18 +132,18 @@ Click the **Add step** button to add the first step. Configure it as follows:
 a. **Node Type:** `Job Template`
 b. **Job Template:** Select `Retrieve INSTANCES by tag`. Click **Next**.
 c. **Survey:** In the `Provide an EC2 filter` field, enter `"tag:Name": "rhel1"`.
-d. Click **Next**, **Next**, then **Finish** to add the node.
+d. Click **Next**, then **Finish** to add the node.
 --
 
 . **Add the second node (Stop Instances).**
 +
-Hover over the `Retrieve INSTANCES by tag` node, click the **elipsis** icon, and select *Add step and link*. Configure it as follows:
+Hover over the `Retrieve INSTANCES by tag` node, click the **ellipsis** icon, and select *Add step and link*. Configure it as follows:
 +
 --
 a. **Node Type:** `Job Template`
 b. **Job Template:** Select `Stop instances`.
 c. **Status:** Select `Run On Success`.
-d. Click **Next**, **Next**, then **Finish**.
+d. Click **Next**, then **Finish**.
 --
 
 . **Save the workflow.**
@@ -181,7 +181,7 @@ Finally, you will confirm the result in the AWS Management Console.
 
 . **Navigate to the AWS Console.**
 +
-Click on the **AWS console** tab in your lab environment and log in with the provided credentials.
+Open the **AWS console** in your lab environment by clicking on the **Cloud (AWS)** and log in with the provided credentials.
 +
 WARNING: Be careful to avoid extra spaces when copying and pasting the credentials.
 
